@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 
 const App = () => {
   const [questions, setQuestions] = useState([]);
+  const [error, setError] = useState(false);
   const [options, setOptions] = useState([]);
   const [index, setIndex] = useState(0);
   const [result, setResult] = useState(0);
@@ -12,10 +13,15 @@ const App = () => {
   const optionsRef = useRef([]);
 
   const fetchData = async () => {
-    const response = await fetch(`https://the-trivia-api.com/v2/questions`);
-    const data = await response.json();
-    console.log(data);
-    setQuestions(data);
+    try {
+      const response = await fetch(`https://the-trivia-api.com/v2/questions`);
+      const data = await response.json();
+      // console.log(data);
+      setQuestions(data);
+    } catch (error) {
+      console.log(error);
+      setError(true);
+    }
   };
   useEffect(() => {
     fetchData();
@@ -58,6 +64,11 @@ const App = () => {
       <h1 className="text-4xl text-center font-semibold  mt-2">Quiz App</h1>
       <div className="h-[90vh] flex items-center justify-center">
         <main className="w-[520px] min-h-[380px] rounded-lg  flex shadow-lg flex-col justify-center bg-slate-300">
+          {error && (
+            <h3 className="text-center text-2xl text-red-500">
+              Error fetching data...
+            </h3>
+          )}
           {!showResult ? (
             <div className="p-4">
               {questions.length > 0 && (
@@ -93,7 +104,7 @@ const App = () => {
                     <button
                       disabled={isDisabled}
                       onClick={handleNext}
-                      className="btn btn-primary m-0"
+                      className="btn disabled:cursor-not-allowed !pointer-events-auto btn-primary m-0"
                     >
                       Next
                     </button>
@@ -107,7 +118,7 @@ const App = () => {
                 You score : {result}/{questions.length * 10}
               </h2>
               <button
-                className="btn btn-outline mt-4 btn-info"
+                className="btn btn-outline mt-4 btn-primary"
                 onClick={() => setDisplayAnswers(true)}
               >
                 Show Answers
@@ -115,7 +126,7 @@ const App = () => {
             </div>
           ) : (
             <div className="overflow-auto p-3 h-[380px]">
-              <h2 className="text-2xl text-center">
+              <h2 className="text-2xl text-semibold text-center">
                 You score : {result}/{questions.length * 10}
               </h2>
               {questions.map(({ question, correctAnswer }, index) => (
@@ -123,17 +134,21 @@ const App = () => {
                   <h3 className="text-lg">
                     Q{index + 1}: {question.text}
                   </h3>
-                  <p
-                    className={
-                      userAns[index] === correctAnswer
-                        ? "text-green-500"
-                        : "text-red-500"
-                    }
-                  >
-                    your answer : {userAns[index]}
+                  <p>
+                    your answer :{" "}
+                    <span
+                      className={
+                        userAns[index] === correctAnswer
+                          ? "text-green-500"
+                          : "text-red-500"
+                      }
+                    >
+                      {userAns[index]}
+                    </span>
                   </p>
-                  <p className="text-green-500">
-                    correct answer : {correctAnswer}
+                  <p>
+                    correct answer :{" "}
+                    <span className="text-green-500">{correctAnswer}</span>
                   </p>
                 </div>
               ))}
