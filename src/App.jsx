@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-
+import "./App.css";
 const App = () => {
   const [questions, setQuestions] = useState([]);
   const [error, setError] = useState(false);
@@ -61,7 +61,7 @@ const App = () => {
 
   return (
     <>
-      <h1 className="text-4xl text-center font-semibold  mt-2">Quiz App</h1>
+      <h1 className="text-4xl text-center font-semibold  pt-2">Quiz App</h1>
       <div className="h-[90vh] flex items-center justify-center">
         <main className="w-[520px] min-h-[380px] rounded-lg  flex shadow-lg flex-col justify-center bg-slate-300">
           {error && (
